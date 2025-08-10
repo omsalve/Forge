@@ -11,13 +11,6 @@ const dashboardGrid = `
   "picture chatbot chatbot chatbot"
 `;
 
-const workoutGrid = `
-  "today lastsesh aisugg aisugg"
-  "today lastsesh aisugg aisugg"
-  "today lastsesh aisugg aisugg"
-  "today lastsesh aisugg aisugg"
-`;
-
 export default function Page() {
   return (
     <main className="flex">
@@ -44,18 +37,7 @@ export default function Page() {
         </section>
         
         <section className="h-screen flex items-center justify-center snap-start">
-          <GridWrapper id="workout"
-          style={{
-              gridTemplateAreas: workoutGrid,
-              gridTemplateColumns: "1fr 1fr 1fr 1fr",
-              gridTemplateRows: "1fr 1fr 1fr 1fr",
-            }}>  
-            
-            <BentoCard title="today's workout" area="today" />
-            <BentoCard title="last session log" area="lastsesh" />
-            <BentoCard title="AI suggested workout" area="aisugg" />
-            
-            </GridWrapper>
+          <GridWrapper id="workout" />
         </section>
         <section className="h-screen flex items-center justify-center snap-start">
           <GridWrapper id="meals" />
