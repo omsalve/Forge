@@ -25,43 +25,79 @@ export default function Page() {
       <SideBar />
 
       {/* Scrollable full pages */}
-      <div className="flex-1 overflow-y-auto snap-y snap-mandatory">
-        <section className="h-screen flex items-center justify-center snap-start">
-           <GridWrapper
-            id="dashboard"
+      <div className="flex-1 overflow-y-auto snap-y snap-mandatory scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900">
+        <section id="dashboard" className="h-screen flex items-center justify-center snap-start px-6 md:px-12">
+          <GridWrapper
+            
             style={{
               gridTemplateAreas: dashboardGrid,
               gridTemplateColumns: "1fr 1fr 1fr 1fr",
               gridTemplateRows: "1fr 1fr 1fr 1fr",
             }}
+            className="gap-6"
           >
-            <BentoCard title="Your Picture" area="picture" />
-            <BentoCard title="Calorie Intake" area="calories" />
-            <BentoCard title="Macros" area="macros" />
-            <BentoCard title="Water Intake" area="water" />
-            <BentoCard title="AI Chatbot" area="chatbot" />
+            <BentoCard
+              title="Your Picture"
+              area="picture"
+              className="shadow-lg shadow-black/60 rounded-lg"
+            />
+            <BentoCard
+              title="Calorie Intake"
+              area="calories"
+              className="shadow-lg shadow-black/50 rounded-lg"
+            />
+            <BentoCard
+              title="Macros"
+              area="macros"
+              className="shadow-lg shadow-black/50 rounded-lg"
+            />
+            <BentoCard
+              title="Water Intake"
+              area="water"
+              className="shadow-lg shadow-black/50 rounded-lg"
+            />
+            <BentoCard
+              title="AI Chatbot"
+              area="chatbot"
+              className="shadow-lg shadow-black/50 rounded-lg"
+            />
           </GridWrapper>
         </section>
-        
-        <section className="h-screen flex items-center justify-center snap-start">
-          <GridWrapper id="workout"
-          style={{
+
+        <section id="workout" className="h-screen flex items-center justify-center snap-start px-6 md:px-12">
+          <GridWrapper
+            
+            style={{
               gridTemplateAreas: workoutGrid,
               gridTemplateColumns: "1fr 1fr 1fr 1fr",
               gridTemplateRows: "1fr 1fr 1fr 1fr",
-            }}>  
-            
-            <BentoCard title="today's workout" area="today" />
-            <BentoCard title="last session log" area="lastsesh" />
-            <BentoCard title="AI suggested workout" area="aisugg" />
-            
-            </GridWrapper>
+            }}
+            className="gap-6"
+          >
+            <BentoCard
+              title="Today's Workout"
+              area="today"
+              className="shadow-lg shadow-black/50 rounded-lg"
+            />
+            <BentoCard
+              title="Last Session Log"
+              area="lastsesh"
+              className="shadow-lg shadow-black/50 rounded-lg"
+            />
+            <BentoCard
+              title="AI Suggested Workout"
+              area="aisugg"
+              className="shadow-lg shadow-black/50 rounded-lg"
+            />
+          </GridWrapper>
         </section>
-        <section className="h-screen flex items-center justify-center snap-start">
-          <GridWrapper id="meals" />
+
+        <section id="meals" className="h-screen flex items-center justify-center snap-start px-6 md:px-12">
+          <GridWrapper  className="gap-6" />
         </section>
-        <section className="h-screen flex items-center justify-center snap-start">
-          <GridWrapper id="profile" />
+
+        <section id="profile" className="h-screen flex items-center justify-center snap-start px-6 md:px-12">
+          <GridWrapper  className="gap-6" />
         </section>
       </div>
     </main>
