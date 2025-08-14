@@ -21,10 +21,10 @@ const workoutGrid = `
 `;
 
 const mealGrid = `
-  "calGoal yestmeal aimeal aimeal"
-  "calGoal yestmeal aimeal aimeal"
-  "Nmeal yestmeal aimeal aimeal"
-  "Nmeal yestmeal aimeal aimeal"
+  "today aimeal aimeal aimeal"
+  "today aimeal aimeal aimeal"
+  "today calories macros water"
+  "today calories macros water"
 `;
 
 const profGrid = `
@@ -135,23 +135,27 @@ export default function Page() {
           >
             <BentoCard
               title="Calorie Goal"
-              area="calGoal"
+              area="calories"
               className="shadow-lg shadow-black/50 rounded-lg"
             />
             <BentoCard
-              title="Next Meal"
-              area="Nmeal"
+              title="Macros"
+              area="macros"
               className="shadow-lg shadow-black/50 rounded-lg"
             />
             <BentoCard
-              title="Yesterday's Meals"
-              area="yestmeal"
+              title="Water Intake"
+              area="water"
               className="shadow-lg shadow-black/50 rounded-lg"
             />
             <BentoCard
-              title="AI Suggested Meal"
-              area="aimeal"
+              title="Today's Meals"
+              area="today"
               className="shadow-lg shadow-black/50 rounded-lg"
+            />
+            <BentoCard title="AI Suggested Meals"
+            area="aimeal"
+            className="shadow-lg shadow-black/50 rounded-lg"
             />
           </GridWrapper>
         </section>
