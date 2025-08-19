@@ -1,6 +1,6 @@
 "use client";
 
-import DarkVeil from "../../../src/reactbits/Backgrounds/DarkVeil/DarkVeil";
+import DarkVeil from "../reactbits/Backgrounds/DarkVeil/DarkVeil";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { useRef, useState } from "react";
