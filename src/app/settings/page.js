@@ -1,6 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  User,
+  Settings as SettingsIcon,
+  Lock,
+  Download,
+  Upload,
+  Trash2,
+  Bell,
+  Ruler,
+  Shield,
+  Database,
+} from "lucide-react";
 
 export default function Settings() {
   const [profile, setProfile] = useState({
@@ -22,23 +35,32 @@ export default function Settings() {
   });
 
   const handleSave = () => {
-    alert("Settings saved\nYour preferences have been updated successfully.");
+    alert("✅ Settings saved\nYour preferences have been updated successfully.");
   };
 
+  // Section wrapper
   const SettingsSection = ({ title, children, badge }) => (
-    <section className="bg-gray-800 border border-gray-700 p-6 rounded-lg hover:bg-gray-700 transition">
-      <div className="flex items-center mb-6">
+    <motion.section
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.3 }}
+      className="relative overflow-hidden bg-black/90 border border-gray-800 p-6 rounded-2xl hover:border-red-600/40 transition"
+    >
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-red-600/5 to-transparent" />
+      <div className="relative flex items-center mb-6">
         <h3 className="text-lg font-semibold text-white">{title}</h3>
         {badge && (
-          <span className="ml-auto bg-gray-600 text-gray-300 px-2 py-0.5 rounded text-xs font-semibold">
+          <span className="ml-auto bg-red-600/20 text-red-400 border border-red-600/30 px-2 py-0.5 rounded text-xs font-semibold">
             {badge}
           </span>
         )}
       </div>
-      <div className="space-y-4">{children}</div>
-    </section>
+      <div className="relative space-y-4">{children}</div>
+    </motion.section>
   );
 
+  // Setting row
   const SettingRow = ({ label, description, children }) => (
     <div className="flex items-center justify-between py-2">
       <div className="space-y-1 max-w-xs">
@@ -51,43 +73,36 @@ export default function Settings() {
     </div>
   );
 
-  // Simple select replacement with native <select>
-  // Switch replacement with checkbox input styled minimal
-
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen relative bg-black p-6 text-white overflow-y-auto overflow-x-hidden">
+      {/* background glow */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-red-600/10 to-transparent blur-2xl" />
+
+      <div className="relative max-w-4xl mx-auto space-y-8">
         {/* Header */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-400 shadow-lg">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 8c1.656 0 3-1.344 3-3S13.656 2 12 2 9 3.344 9 5s1.344 3 3 3zM19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"
-                />
-              </svg>
+            <div className="p-3 rounded-xl bg-gradient-to-r from-red-600 to-red-400 shadow-lg border border-red-600/30">
+              <SettingsIcon className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Settings</h1>
-              <p className="text-gray-400">Customize your Forge experience</p>
+              <h1 className="text-3xl font-bold">Settings</h1>
+              <p className="text-gray-400">Fine-tune your Forge vibe</p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Profile Settings */}
+        {/* Profile */}
         <SettingsSection title="Profile" badge="Premium">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Name */}
             <div>
               <label htmlFor="name" className="block mb-1 text-white font-medium">
+                <User className="inline h-4 w-4 mr-1 text-red-400" />
                 Full Name
               </label>
               <input
@@ -95,28 +110,30 @@ export default function Settings() {
                 type="text"
                 value={profile.name}
                 onChange={(e) =>
-                  setProfile((prev) => ({ ...prev, name: e.target.value }))
+                  setProfile((p) => ({ ...p, name: e.target.value }))
                 }
-                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg bg-black border border-gray-700 text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/30"
               />
             </div>
+            {/* Email */}
             <div>
               <label htmlFor="email" className="block mb-1 text-white font-medium">
-                Email
+                📧 Email
               </label>
               <input
                 id="email"
                 type="email"
                 value={profile.email}
                 onChange={(e) =>
-                  setProfile((prev) => ({ ...prev, email: e.target.value }))
+                  setProfile((p) => ({ ...p, email: e.target.value }))
                 }
-                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg bg-black border border-gray-700 text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/30"
               />
             </div>
+            {/* Age */}
             <div>
               <label htmlFor="age" className="block mb-1 text-white font-medium">
-                Age
+                🎂 Age
               </label>
               <input
                 id="age"
@@ -124,25 +141,23 @@ export default function Settings() {
                 min={0}
                 value={profile.age}
                 onChange={(e) =>
-                  setProfile((prev) => ({
-                    ...prev,
-                    age: parseInt(e.target.value) || 0,
-                  }))
+                  setProfile((p) => ({ ...p, age: parseInt(e.target.value) || 0 }))
                 }
-                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg bg-black border border-gray-700 text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/30"
               />
             </div>
+            {/* Goal */}
             <div>
               <label htmlFor="goal" className="block mb-1 text-white font-medium">
-                Primary Goal
+                🎯 Primary Goal
               </label>
               <select
                 id="goal"
                 value={profile.goal}
                 onChange={(e) =>
-                  setProfile((prev) => ({ ...prev, goal: e.target.value }))
+                  setProfile((p) => ({ ...p, goal: e.target.value }))
                 }
-                className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg bg-black border border-gray-700 text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/30"
               >
                 <option value="weight-loss">Weight Loss</option>
                 <option value="muscle-gain">Muscle Gain</option>
@@ -152,57 +167,21 @@ export default function Settings() {
               </select>
             </div>
           </div>
-
-          <hr className="border-gray-600 my-6" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <SettingRow label="Weight" description="Current body weight">
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min={0}
-                  value={profile.weight}
-                  onChange={(e) =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      weight: parseInt(e.target.value) || 0,
-                    }))
-                  }
-                  className="w-20 px-2 py-1 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-400">kg</span>
-              </div>
-            </SettingRow>
-
-            <SettingRow label="Height" description="Your height">
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min={0}
-                  value={profile.height}
-                  onChange={(e) =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      height: parseInt(e.target.value) || 0,
-                    }))
-                  }
-                  className="w-20 px-2 py-1 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-400">cm</span>
-              </div>
-            </SettingRow>
-          </div>
         </SettingsSection>
 
-        {/* App Preferences */}
+        {/* Preferences */}
         <SettingsSection title="App Preferences">
-          <SettingRow label="Measurement Units" description="Choose your preferred unit system">
+          <SettingRow
+            label="Measurement Units"
+            description="Choose your preferred unit system"
+          >
+            <Ruler className="h-4 w-4 text-gray-400" />
             <select
               value={preferences.units}
               onChange={(e) =>
-                setPreferences((prev) => ({ ...prev, units: e.target.value }))
+                setPreferences((p) => ({ ...p, units: e.target.value }))
               }
-              className="w-32 px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-32 px-3 py-2 rounded bg-black border border-gray-700 text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/30"
             >
               <option value="metric">Metric</option>
               <option value="imperial">Imperial</option>
@@ -212,83 +191,58 @@ export default function Settings() {
 
         {/* Notifications */}
         <SettingsSection title="Notifications">
-          <SettingRow label="Push Notifications" description="Receive notifications on your device">
-            <input
-              type="checkbox"
-              checked={preferences.notifications}
-              onChange={(e) =>
-                setPreferences((prev) => ({ ...prev, notifications: e.target.checked }))
-              }
-              className="h-5 w-9 cursor-pointer"
-            />
-          </SettingRow>
-
-          <SettingRow
-            label="Weekly Progress Reports"
-            description="Get weekly summaries of your progress"
-          >
-            <input
-              type="checkbox"
-              checked={preferences.weeklyReports}
-              onChange={(e) =>
-                setPreferences((prev) => ({ ...prev, weeklyReports: e.target.checked }))
-              }
-              className="h-5 w-9 cursor-pointer"
-            />
-          </SettingRow>
-
-          <SettingRow label="Workout Reminders" description="Remind me when it's time to work out">
-            <input
-              type="checkbox"
-              checked={preferences.workoutReminders}
-              onChange={(e) =>
-                setPreferences((prev) => ({ ...prev, workoutReminders: e.target.checked }))
-              }
-              className="h-5 w-9 cursor-pointer"
-            />
-          </SettingRow>
+          {[
+            ["Push Notifications", "Receive notifications on your device", "notifications", <Bell key="bell" className="h-4 w-4 text-gray-400" />],
+            ["Weekly Reports", "Get weekly summaries of your progress", "weeklyReports", "📊"],
+            ["Workout Reminders", "Remind me when it’s time to work out", "workoutReminders", "⏰"],
+          ].map(([label, desc, key, icon]) => (
+            <SettingRow key={key} label={<span className="flex items-center gap-1">{icon} {label}</span>} description={desc}>
+              <input
+                type="checkbox"
+                checked={preferences[key]}
+                onChange={(e) =>
+                  setPreferences((p) => ({ ...p, [key]: e.target.checked }))
+                }
+                className="h-5 w-9 cursor-pointer accent-red-600"
+              />
+            </SettingRow>
+          ))}
         </SettingsSection>
 
-        {/* Privacy & Security */}
+        {/* Privacy */}
         <SettingsSection title="Privacy & Security">
-          <SettingRow label="Private Profile" description="Hide your profile from other users">
-            <input
-              type="checkbox"
-              checked={preferences.privateProfile}
-              onChange={(e) =>
-                setPreferences((prev) => ({ ...prev, privateProfile: e.target.checked }))
-              }
-              className="h-5 w-9 cursor-pointer"
-            />
-          </SettingRow>
+          {[
+            ["Private Profile", "Hide your profile from other users", "privateProfile", <Shield key="shield" className="h-4 w-4 text-gray-400" />],
+            ["Data Sharing", "Allow anonymous data sharing", "dataSharing", <Database key="db" className="h-4 w-4 text-gray-400" />],
+          ].map(([label, desc, key, icon]) => (
+            <SettingRow key={key} label={<span className="flex items-center gap-1">{icon} {label}</span>} description={desc}>
+              <input
+                type="checkbox"
+                checked={preferences[key]}
+                onChange={(e) =>
+                  setPreferences((p) => ({ ...p, [key]: e.target.checked }))
+                }
+                className="h-5 w-9 cursor-pointer accent-red-600"
+              />
+            </SettingRow>
+          ))}
 
-          <SettingRow label="Data Sharing" description="Allow anonymous data sharing for research">
-            <input
-              type="checkbox"
-              checked={preferences.dataSharing}
-              onChange={(e) =>
-                setPreferences((prev) => ({ ...prev, dataSharing: e.target.checked }))
-              }
-              className="h-5 w-9 cursor-pointer"
-            />
-          </SettingRow>
-
-          <hr className="border-gray-600 my-6" />
+          <hr className="border-gray-800 my-6" />
 
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="button"
-              className="flex-1 py-2 px-4 border border-gray-600 rounded bg-transparent text-white hover:bg-gray-700 transition"
-              onClick={() => alert("Change Password clicked")}
+              className="flex-1 py-2 px-4 border border-gray-800 rounded bg-black text-white hover:border-red-600/40 transition flex items-center justify-center gap-2"
+              onClick={() => alert("🔒 Change Password clicked")}
             >
-              🔒 Change Password
+              <Lock className="h-4 w-4" /> Change Password
             </button>
             <button
               type="button"
-              className="flex-1 py-2 px-4 border border-gray-600 rounded bg-transparent text-white hover:bg-gray-700 transition"
-              onClick={() => alert("Download Data clicked")}
+              className="flex-1 py-2 px-4 border border-gray-800 rounded bg-black text-white hover:border-red-600/40 transition flex items-center justify-center gap-2"
+              onClick={() => alert("⬇️ Download Data clicked")}
             >
-              ⬇️ Download Data
+              <Download className="h-4 w-4" /> Download Data
             </button>
           </div>
         </SettingsSection>
@@ -298,64 +252,41 @@ export default function Settings() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
             <button
               type="button"
-              className="flex justify-start items-center gap-2 py-2 px-4 border border-gray-600 rounded bg-transparent text-white hover:bg-gray-700 transition"
-              onClick={() => alert("Import Data clicked")}
+              className="flex justify-center items-center gap-2 py-2 px-4 border border-gray-800 rounded bg-black text-white hover:border-red-600/40 transition"
+              onClick={() => alert("⬆️ Import Data clicked")}
             >
-              ⬆️ Import Data
+              <Upload className="h-4 w-4" /> Import
             </button>
             <button
               type="button"
-              className="flex justify-start items-center gap-2 py-2 px-4 border border-gray-600 rounded bg-transparent text-white hover:bg-gray-700 transition"
-              onClick={() => alert("Export Data clicked")}
+              className="flex justify-center items-center gap-2 py-2 px-4 border border-gray-800 rounded bg-black text-white hover:border-red-600/40 transition"
+              onClick={() => alert("⬇️ Export Data clicked")}
             >
-              ⬇️ Export Data
+              <Download className="h-4 w-4" /> Export
             </button>
             <button
               type="button"
-              className="flex justify-start items-center gap-2 py-2 px-4 border border-red-600 rounded bg-transparent text-red-600 hover:bg-red-700 transition"
+              className="flex justify-center items-center gap-2 py-2 px-4 border border-red-600/60 rounded bg-black text-red-500 hover:border-red-600 transition"
               onClick={() => {
                 if (
-                  confirm(
-                    "Are you sure you want to clear all data? This action cannot be undone."
-                  )
+                  confirm("⚠️ Are you sure you want to clear all data? This cannot be undone.")
                 ) {
-                  alert("Data cleared!");
+                  alert("🗑️ Data cleared!");
                 }
               }}
             >
-              🗑️ Clear All Data
+              <Trash2 className="h-4 w-4" /> Clear All
             </button>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4 space-y-2 text-white">
-            <h4 className="font-medium">Storage Usage</h4>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Workouts:</span>
-                <span className="font-medium">2.4 MB</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Nutrition:</span>
-                <span className="font-medium">1.8 MB</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Progress Photos:</span>
-                <span className="font-medium">15.2 MB</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total:</span>
-                <span className="font-medium text-blue-400">19.4 MB</span>
-              </div>
-            </div>
           </div>
         </SettingsSection>
 
-        {/* Save Button */}
+        {/* Save button */}
         <div className="flex justify-end">
           <button
             onClick={handleSave}
-            className="bg-gradient-to-r from-blue-600 to-blue-400 px-8 py-3 rounded shadow-lg text-white font-semibold hover:brightness-110 transition"
+            className="relative overflow-hidden bg-black text-red-400 border border-red-600/30 ring-1 ring-red-600/40 px-8 py-3 rounded-lg shadow-lg font-semibold hover:ring-red-500/50 hover:border-red-500/40 hover:text-red-300 transition flex items-center gap-2"
           >
+            <SettingsIcon className="h-5 w-5" />
             Save All Changes
           </button>
         </div>

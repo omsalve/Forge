@@ -7,17 +7,19 @@ import { animate } from "framer-motion";
 export default function SideBar() {
   // Smooth scroll function using framer-motion animate
   const smoothScrollTo = useCallback((targetId) => {
+    const scroller = document.getElementById("dash-scroll");
     const target = document.getElementById(targetId);
-    if (!target) return;
+    if (!scroller || !target) return;
 
-    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
-    const startPosition = window.pageYOffset;
+    const targetTopInScroller = target.offsetTop - scroller.offsetTop;
+    const start = scroller.scrollTop;
+    const end = targetTopInScroller;
 
-    animate(startPosition, targetPosition, {
+    animate(start, end, {
       duration: 0.8,
-      ease: [0.22, 1, 0.36, 1], // easeOutCubic-ish
+      ease: [0.22, 1, 0.36, 1],
       onUpdate(value) {
-        window.scrollTo(0, value);
+        scroller.scrollTo({ top: value });
       },
     });
   }, []);
