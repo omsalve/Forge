@@ -44,3 +44,39 @@ h2 {
   font-family: "Satoshi", sans-serif;
   font-weight: 500; /* adjust to taste */
 }
+
+/* Custom Scrollbars - 60-30-10: Black track, Red thumb, Grey hover */
+/* WebKit browsers */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: #000000; /* black */
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(220, 38, 38, 0.8); /* red-600 */
+  border: 2px solid #000000; /* black border to blend track */
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.9); /* red-500 */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(220, 38, 38, 0.8) #000000; /* thumb track */
+}
+
+/* Utility to hide scrollbars while keeping scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+html, body {
+  overflow-x: hidden;
+}
