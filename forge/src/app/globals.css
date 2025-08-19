@@ -24,3 +24,23 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@font-face {
+  font-family: 'BaseNeue';
+  src: url('/fonts/BaseNeueTrial-ExpandedBlack.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
+
+
+h1 {
+  font-family: "Base Neue", sans-serif;
+}
+
+h2 {
+  font-family: "Satoshi", sans-serif;
+  font-weight: 500; /* adjust to taste */
+}

@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        baseNeue: ["BaseNeueTrial-ExpandedBlack", "sans-serif"], // custom font
+        satoshi: ["Satoshi", "sans-serif"],
+      },
       colors: {
         foreground: "hsl(var(--foreground))",
       },
