@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental: {
-      optimizeCss: false, // 🔥 disables lightningcss so Vercel won’t cry
-    },
-  }
-  
-  module.exports = nextConfig
-  
+  experimental: {
+    optimizeCss: false, // 🚫 disables lightningcss so builds don't break on Vercel
+  },
+};
+
+export default nextConfig;
