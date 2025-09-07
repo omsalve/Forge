@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// USER & AUTH MODELS
+// ==========================================
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Forge-specific profile data
+  goal              Goal            @default(HYPERTROPHY)
+  experienceLevel   ExperienceLevel @default(BEGINNER)
+  weeklyFrequency   Int             @default(3) // Days per week
+  availableEquipment Equipment[]
+
+  // Relations
+  workoutPlans      WorkoutPlan[]
+  completedWorkouts CompletedWorkout[]
+}
+
+// ==========================================
+// EXERCISE LIBRARY MODELS
+// ==========================================
+model Exercise {
+  id                  String            @id @default(cuid())
+  name                String            @unique
+  description         String?
+  videoUrl            String?
+
+  // Categorization for the AI logic
+  primaryMuscleGroup  MuscleGroup
+  secondaryMuscleGroups MuscleGroup[]
+  equipmentNeeded     Equipment
+  movementPattern     MovementPattern?
+
+  // Relations
+  workoutExercises    WorkoutExercise[]
+  completedSets       CompletedSet[]
+}
+
+
+// ==========================================
+// WORKOUT PLAN & LOGGING MODELS
+// ==========================================
+
+// The overall plan assigned to a user
+model WorkoutPlan {
+  id        String   @id @default(cuid())
+  name      String // e.g., "Phase 1: Hypertrophy Focus"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  sessions  WorkoutSession[]
+}
+
+// A specific day in the plan (e.g., "Push Day A")
+model WorkoutSession {
+  id             String @id @default(cuid())
+  name           String // "Push Day A", "Full Body 1"
+  sessionOrder   Int    // Order within the plan (1, 2, 3...)
+
+  workoutPlanId  String
+  workoutPlan    WorkoutPlan @relation(fields: [workoutPlanId], references: [id])
+
+  exercises      WorkoutExercise[]
+}
+
+// An exercise within a specific session, defining targets
+model WorkoutExercise {
+  id             String @id @default(cuid())
+  
+  // Targets for the user
+  targetSets     Int
+  targetReps     String // e.g., "8-12" or "5"
+  targetRPE      Float? // Rate of Perceived Exertion (e.g., 8.5)
+  restPeriodSec  Int    @default(60)
+
+  exerciseId     String
+  exercise       Exercise @relation(fields: [exerciseId], references: [id])
+
+  workoutSessionId String
+  workoutSession   WorkoutSession @relation(fields: [workoutSessionId], references: [id])
+}
+
+// A record of a fully completed workout
+model CompletedWorkout {
+  id          String   @id @default(cuid())
+  completedAt DateTime @default(now())
+  notes       String?
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  sets        CompletedSet[]
+}
+
+// The GOLD DUST. The actual performance data for a single set.
+model CompletedSet {
+  id          String   @id @default(cuid())
+  setNumber   Int
+  reps        Int
+  weight      Float
+  
+  // Qualitative data
+  RPE         Float?   // Actual RPE logged by user
+  isPR        Boolean  @default(false) // Was this a personal record?
+  
+  exerciseId  String
+  exercise    Exercise @relation(fields: [exerciseId], references: [id])
+
+  completedWorkoutId String
+  completedWorkout   CompletedWorkout @relation(fields: [completedWorkoutId], references: [id])
+}
+
+
+// ==========================================
+// ENUMS - For strict categorization
+// ==========================================
+
+enum Goal {
+  STRENGTH
+  HYPERTROPHY
+  ENDURANCE
+}
+
+enum ExperienceLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Equipment {
+  BARBELL
+  DUMBBELL
+  MACHINE
+  CABLE
+  KETTLEBELL
+  BODYWEIGHT
+  BANDS
+}
+
+enum MuscleGroup {
+  CHEST
+  BACK
+  LEGS
+  SHOULDERS
+  BICEPS
+  TRICEPS
+  ABS
+  GLUTES
+  HAMSTRINGS
+  QUADS
+  CALVES
+}
+
+enum MovementPattern {
+  HORIZONTAL_PUSH
+  HORIZONTAL_PULL
+  VERTICAL_PUSH
+  VERTICAL_PULL
+  SQUAT
+  HINGE
+  LUNGE
+  ISOLATION
+}
