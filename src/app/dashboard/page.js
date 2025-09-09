@@ -1,151 +1,117 @@
-"use client";
+import Link from 'next/link';
+import BentoCard from '../../components/BentoCard';
+import GridWrapper from '../../components/GridWrapper';
+import { auth } from '@clerk/nextjs/server';
+import { UserButton } from "@clerk/nextjs";
+import prisma from '../libs/prisma';
 
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import SideBar from "../../components/SideBar";
-import GridWrapper from "../../components/GridWrapper";
-import BentoCard from "../../components/BentoCard";
-import SettingsButton from "../../components/SettingsButton";
+/**
+ * This is a Next.js Server Component.
+ * It's an `async` function, which allows us to fetch data directly
+ * from the database based on the authenticated user. This code runs on the server.
+ */
+export default async function DashboardPage() {
+  // 1. Get the authenticated user's ID from Clerk
+  const { userId } = auth();
 
-// ---- Desktop Grid Templates ----
-const dashboardGrid = `
-  "picture calories macros water"
-  "picture calories macros water"
-  "picture chatbot chatbot chatbot"
-  "picture chatbot chatbot chatbot"
-`;
+  let workoutPlan = null;
+  // 2. If a user is logged in, fetch their most recent workout plan
+  if (userId) {
+    workoutPlan = await prisma.workoutPlan.findFirst({
+      where: {
+        userId: userId, // Use the actual user's ID
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        sessions: {
+          orderBy: { sessionOrder: 'asc' },
+          include: {
+            exercises: {
+              include: {
+                exercise: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
 
-const workoutGrid = `
-  "today lastsesh aisugg aisugg"
-  "today lastsesh aisugg aisugg"
-  "today lastsesh aisugg aisugg"
-  "today lastsesh aisugg aisugg"
-`;
-
-const mealGrid = `
-  "today aimeal aimeal aimeal"
-  "today aimeal aimeal aimeal"
-  "today calories macros water"
-  "today calories macros water"
-`;
-
-const profGrid = `
-  "avatar avatar avatar board board board"
-  "weight bodyfat . board board board"
-  "bp squats dl desc desc desc"
-  "bp squats dl desc desc desc"
-`;
-
-export default function Page() {
-  const router = useRouter();
-
+  // 3. Render the page with a single return statement and conditional logic inside
   return (
-    <main className="flex bg-black text-white h-screen overflow-hidden">
-      {/* Sidebar (desktop only) */}
-      <div className="hidden md:block">
-        <SideBar />
-        <SettingsButton onClick={() => router.push("/settings")} />
-      </div>
-      
-
-      {/* Main Content */}
-      <div className="flex-1 h-full overflow-y-auto no-scrollbar">
-        {/* Settings Button (mobile only) */}
-        <div className="md:hidden flex justify-end p-4">
-          <SettingsButton onClick={() => router.push("/settings")} />
+    <main className="bg-black text-white min-h-screen p-4 sm:p-6 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+              {workoutPlan ? workoutPlan.name : 'Welcome to Forge'}
+            </h1>
+            <p className="text-gray-400 mt-2 text-lg">
+              {workoutPlan
+                ? 'Your personalized program is ready. Time to get to work.'
+                : 'Create a plan to get started.'}
+            </p>
+          </div>
+          {/* Clerk's user button for profile and sign-out */}
+          <UserButton afterSignOutUrl="/" />
         </div>
 
-        {/* Sections */}
-        <Section badge="Dashboard" title="Your Overview" grid={dashboardGrid} cols={4}>
-          <BentoCard title="Your Picture" area="picture" />
-          <BentoCard title="Calorie Intake" area="calories" />
-          <BentoCard title="Macros" area="macros" />
-          <BentoCard title="Water Intake" area="water" />
-          <BentoCard title="AI Chatbot" area="chatbot" />
-        </Section>
+        <GridWrapper>
+          {/* This is the conditional rendering logic (ternary operator).
+            If a workoutPlan exists, it maps over the sessions.
+            If not, it displays the welcome/onboarding card.
+          */}
+          {workoutPlan ? (
+            workoutPlan.sessions.map((session, index) => (
+              <BentoCard
+                key={session.id}
+                className={index < 2 ? 'md:col-span-6' : 'md:col-span-4'}
+              >
+                <div className="flex flex-col h-full">
+                  <h2 className="text-2xl font-bold text-red-400">{`Day ${session.sessionOrder}`}</h2>
+                  <p className="text-gray-400 mb-4">{session.name}</p>
 
-        <Section badge="Workout" title="Train Smarter" grid={workoutGrid} cols={4}>
-          <BentoCard title="Today's Workout" area="today" />
-          <BentoCard title="Last Session Log" area="lastsesh" />
-          <BentoCard title="AI Suggested Workout" area="aisugg" />
-        </Section>
+                  <div className="flex-grow space-y-3 mb-4 overflow-y-auto pr-2">
+                    {session.exercises.map(({ exercise, targetSets, targetReps }) => (
+                      <div
+                        key={exercise.id}
+                        className="flex justify-between items-center text-sm p-3 bg-gray-900/70 border border-gray-800 rounded-lg"
+                      >
+                        <span className="text-gray-200">{exercise.name}</span>
+                        <span className="font-mono text-red-400 font-semibold">
+                          {targetSets}x{targetReps}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
 
-        <Section badge="Meals" title="Fuel Right" grid={mealGrid} cols={4}>
-          <BentoCard title="Calorie Goal" area="calories" />
-          <BentoCard title="Macros" area="macros" />
-          <BentoCard title="Water Intake" area="water" />
-          <BentoCard title="Today's Meals" area="today" />
-          <BentoCard title="AI Suggested Meals" area="aimeal" />
-        </Section>
-
-        <Section badge="Profile" title="Your Numbers" grid={profGrid} cols={6}>
-          <BentoCard title="Your Name & Location" area="avatar" />
-          <BentoCard title="Workout Streak Board" area="board" />
-          <BentoCard title="Weight" area="weight" />
-          <BentoCard title="Body Fat %" area="bodyfat" />
-          <BentoCard title="Bench Press" area="bp" />
-          <BentoCard title="Squats" area="squats" />
-          <BentoCard title="Deadlift" area="dl" />
-          <BentoCard title="AI Coach / Chatbot" area="desc" />
-        </Section>
+                  <Link
+                    href={`/workout/${session.id}`}
+                    className="mt-auto block w-full text-center bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                  >
+                    Start Workout
+                  </Link>
+                </div>
+              </BentoCard>
+            ))
+          ) : (
+            <BentoCard className="col-span-12 row-span-1 flex flex-col items-center justify-center bg-gray-900/50 border-gray-800">
+              <div className="text-center">
+                <p className="text-gray-400 mt-2">
+                  You don&apos;t have an active workout plan yet.
+                </p>
+                <Link
+                  href="/onboarding"
+                  className="mt-6 inline-block bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                >
+                  Create Your First Plan
+                </Link>
+              </div>
+            </BentoCard>
+          )}
+        </GridWrapper>
       </div>
     </main>
   );
 }
 
-// ---- Components ----
-function Section({ badge, title, grid, cols, children }) {
-  return (
-    <section className="relative min-h-screen flex flex-col items-center justify-start px-4 md:px-12 py-6 md:py-8">
-      <div className="absolute -inset-24 pointer-events-none bg-gradient-to-br from-red-600/10 to-transparent blur-2xl" />
-      <Header badge={badge} title={title} />
-      <Content grid={grid} cols={cols}>
-        {children}
-      </Content>
-    </section>
-  );
-}
-
-function Header({ badge, title }) {
-  return (
-    <div className="w-full max-w-6xl mx-auto mb-6 pt-2 md:pt-4">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.35 }}
-        className="text-left"
-      >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 text-red-400 text-xs font-medium mb-3">
-          <span>{badge}</span>
-        </div>
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">{title}</h2>
-      </motion.div>
-    </div>
-  );
-}
-
-function Content({ grid, cols, children }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.35 }}
-      transition={{ duration: 0.4 }}
-      className="w-full max-w-6xl mx-auto h-[72vh]"
-    >
-      {/* Desktop grid */}
-      <div className="hidden md:block h-full">
-        <GridWrapper
-          className={`h-full gap-6 grid grid-cols-${cols}`}
-          style={{ gridTemplateAreas: grid }}
-        >
-          {children}
-        </GridWrapper>
-      </div>
-
-      {/* Mobile stacked */}
-      <div className="flex flex-col gap-4 md:hidden">{children}</div>
-    </motion.div>
-  );
-}
